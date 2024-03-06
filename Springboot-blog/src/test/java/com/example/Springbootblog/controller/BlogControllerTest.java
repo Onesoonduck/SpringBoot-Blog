@@ -15,14 +15,13 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-
 import java.util.List;
-
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
-
 import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest // 테스트용 애플리케이션 컨텍스트
@@ -48,11 +47,12 @@ class BlogControllerTest {
         blogRepository.deleteAll();
     }
 
+    // 글 추가 테스트
     @DisplayName("addArticle: 블로그 글 추가에 성공한다.")
     @Test
     public void addArticle () throws Exception {
 
-        // given 절
+        // given 블로그 글 추가에 필요한 요청 객체를 만듬
         final String url = "/api/articles";
         final String title = "title";
         final String content = "content";
@@ -61,13 +61,13 @@ class BlogControllerTest {
         // 객체 JSON 으로 직렬화
         final String requestBody = objectMapper.writeValueAsString(userRequest);
 
-        // when
+        // when 블로글 추가 API에 요청 보냄 -> 요청 타입은 JSON, given 절에서 만들어둔 객체를 요청 본문으로 같이 보냄
         // 설정한 내용을 바탕으로 요청 전송
         ResultActions result = mockMvc.perform(post(url)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(requestBody));
 
-        // then
+        // then 응답코드가 201 Created인지 확인, Blog를 전체 조회해 크기가 1인지 확인하고, 실제 데이터와 요청값 비교
         result.andExpect(status().isCreated());
 
         List<Article> articles = blogRepository.findAll();
@@ -75,5 +75,31 @@ class BlogControllerTest {
         assertThat(articles.size()).isEqualTo(1); // 크기가 1인지 검증
         assertThat(articles.get(0).getTitle()).isEqualTo(title);
         assertThat(articles.get(0).getContent()).isEqualTo(content);
+    }
+
+    //글 조회 테스트
+    @DisplayName("findAllArticles: 블로그 글 목록 조회에 성공한다.")
+    @Test
+    public void findAllarticles() throws Exception {
+
+        // given 블로그 글 저장
+        final String url = "/api/articles";
+        final String title = "title";
+        final String content = "content";
+
+        blogRepository.save(Article.builder()
+                .title(title)
+                .content(content)
+                .build());
+
+        // when 목록 조회 API 호출
+        final ResultActions resultActions = mockMvc.perform(get(url)
+                .accept(MediaType.APPLICATION_JSON_VALUE));
+
+        // then 응답 코드가 200 OK이고, 반환받은 값중 0번째 요소의 content, title 저장된 값이 같은지 확인
+        resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].content").value(content))
+                .andExpect(jsonPath("$[0].title").value(title));
     }
 }
