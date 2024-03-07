@@ -3,6 +3,7 @@ package com.example.Springbootblog.controller;
 import com.example.Springbootblog.domain.Article;
 import com.example.Springbootblog.dto.AddArticleRequest;
 import com.example.Springbootblog.dto.ArticleResponse;
+import com.example.Springbootblog.dto.UpdateArticleRequest;
 import com.example.Springbootblog.service.BlogService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,7 +18,7 @@ public class BlogController {
 
     private final BlogService blogService;
 
-    //HTTP 메서드가 POST일 때 전달받은 URL과 동일하면 메서드로 매핑
+    //HTTP 메서드가 POST일 때 전달받은 URL과 동일하면 메서드로 매핑(url에 매핑)
     @PostMapping("/api/articles")
     public ResponseEntity<Article> addArticle(@RequestBody AddArticleRequest request) {
         Article savedArticle = blogService.save(request);
@@ -27,6 +28,7 @@ public class BlogController {
                 .body(savedArticle);
     }
 
+    // 블로그 글 조회
     @GetMapping("/api/articles")
     public ResponseEntity<List<ArticleResponse>> findAllArticle () {
         List<ArticleResponse> articles = blogService.findAll()
@@ -38,6 +40,7 @@ public class BlogController {
                 .body(articles);
     }
 
+    // 블로그 글 조회 -> URL 에서 값 불러오기
     // @PathVariable 은 URL에서 값을 가져오는 애너테이션
     @GetMapping("/api/articles/{id}")
     public ResponseEntity<ArticleResponse> findArticle (@PathVariable long id) {
@@ -48,12 +51,22 @@ public class BlogController {
                 .body(new ArticleResponse(article));
     }
 
-    @DeleteMapping("/api/article/{id}") // {id} 에 해당하는 값이 id로 들어옴
+    // 블로그 글 삭제
+    @DeleteMapping("/api/articles/{id}") // {id} 에 해당하는 값이 id로 들어옴
     public ResponseEntity<Void> deleteArticle (@PathVariable long id) {
         blogService.delete(id);
 
         return ResponseEntity.ok()
                 .build();
+    }
+
+    // 블로그 글 수정
+    @PutMapping("/api/articles/{id}")
+    public ResponseEntity<Article> updateArticle (@PathVariable long id, @RequestBody UpdateArticleRequest request) {
+        Article updatedArticle = blogService.update(id, request);
+
+        return ResponseEntity.ok()
+                .body(updatedArticle);
     }
 
 }

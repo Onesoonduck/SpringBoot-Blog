@@ -2,6 +2,7 @@ package com.example.Springbootblog.controller;
 
 import com.example.Springbootblog.domain.Article;
 import com.example.Springbootblog.dto.AddArticleRequest;
+import com.example.Springbootblog.dto.UpdateArticleRequest;
 import com.example.Springbootblog.repository.BlogRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -131,7 +132,7 @@ class BlogControllerTest {
     public void deleteArticle () throws Exception {
 
         // given 블로그 글 저장
-        final String url = "/api/article/{id}";
+        final String url = "/api/articles/{id}";
         final String title = "title";
         final String content = "content";
 
@@ -149,6 +150,39 @@ class BlogControllerTest {
 
         assertThat(articles).isEmpty();
 
+    }
+
+    @DisplayName("updateArticle: 블로그 글 수정에 성공한다.")
+    @Test
+    public void updateArticle() throws Exception {
+
+        // given 블로그 글 저장하고, 글 수정에 필요한 요청 객체 생성
+        final String url = "/api/articles/{id}";
+        final String title = "title";
+        final String content = "content";
+
+        Article savedArticle = blogRepository.save(Article.builder()
+                .title(title)
+                .content(content)
+                .build());
+
+        final String newTitle = "new title";
+        final String newContent = "content";
+
+        UpdateArticleRequest request = new UpdateArticleRequest(newTitle, newContent);
+
+        // when update API 로 수정 요청 보냄 -> 요청 타입은 JSON이며, given 절에서 미리 만들어둔 객체를 요청 본문으로 함께 보냄
+        ResultActions result = mockMvc.perform(put(url, savedArticle.getId())
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(objectMapper.writeValueAsString(request)));
+
+        // then 응답 코드가 200 OK 인지 확인, 블로그 글 id로 조회한 후 값이 수정되는지 확인
+        result.andExpect(status().isOk());
+
+        Article article = blogRepository.findById(savedArticle.getId()).get();
+
+        assertThat(article.getTitle()).isEqualTo(newTitle);
+        assertThat(article.getContent()).isEqualTo(newContent);
     }
 
 }
