@@ -7,10 +7,7 @@ import com.example.Springbootblog.service.BlogService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -39,6 +36,24 @@ public class BlogController {
 
         return ResponseEntity.ok()
                 .body(articles);
+    }
+
+    // @PathVariable 은 URL에서 값을 가져오는 애너테이션
+    @GetMapping("/api/articles/{id}")
+    public ResponseEntity<ArticleResponse> findArticle (@PathVariable long id) {
+        Article article = blogService.findById(id);
+
+        // findById로 id 를 찾고 body에 담아 웹 브라우저로 전송
+        return ResponseEntity.ok()
+                .body(new ArticleResponse(article));
+    }
+
+    @DeleteMapping("/api/article/{id}") // {id} 에 해당하는 값이 id로 들어옴
+    public ResponseEntity<Void> deleteArticle (@PathVariable long id) {
+        blogService.delete(id);
+
+        return ResponseEntity.ok()
+                .build();
     }
 
 }
