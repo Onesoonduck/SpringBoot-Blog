@@ -3,7 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/Springboot-blog.iml" filepath="$PROJECT_DIR$/.idea/Springboot-blog.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Springboot-blog.Springboot-blog.main.iml" filepath="$PROJECT_DIR$/.idea/modules/Springboot-blog.Springboot-blog.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Springboot-blog.Springboot-blog.main~1.iml" filepath="$PROJECT_DIR$/.idea/modules/Springboot-blog.Springboot-blog.main~1.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Springboot-blog.Springboot-blog.test~1.iml" filepath="$PROJECT_DIR$/.idea/modules/Springboot-blog.Springboot-blog.test~1.iml" />
     </modules>
   </component>
 </project>
