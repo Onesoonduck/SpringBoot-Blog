@@ -4,7 +4,17 @@
 
 Blog 형식의 웹을 만들어보자
 
-![image](https://github.com/Onesoonduck/SpringBoot-Blog/assets/155965974/7ff83ec7-e963-4914-852e-90d5301208ce)
+# 기능
 
+![image](https://github.com/user-attachments/assets/8abe574f-6412-4529-8403-e21dede26c9d)
 
-HTTP 메서드는 GET, POST, PUT, DELETE 가 있고, 이것들을 통틀어 CRUD 라고 한다.
+1. 기본적인 구성으로 CRUD로 블로그 기능을 추가
+2. Spring Security 사용함으로써 회원 정보 저장
+3. JWT 토큰을 사용해 사용자 로그인/로그아웃 구현
+4. refreshToken으로 accessToken을 더욱 안전하고 오래 사용할 수 있도록 구현
+
+# 이후 추가할 기능
+1. AWS EC2 환경에서 배포
+2. Docker 배포
+3. CI/CD 툴 Jenkins로 자동 배포 파이프라인 구축
+
